@@ -118,6 +118,8 @@ class MapLibreMapController(
             // back to v1 billing with no crash and no log.
             MapLibre.getInstance(context, mapOptions.apiKey, WellKnownTileServer.MapLibre)
             mapView = MapView(context, options)
+            // Render-rate cap (MapOptions.maximumFps): null keeps the display rate.
+            mapOptions.maximumFps?.let { mapView.setMaximumFps(it.toInt()) }
             lifecycleProvider.getLifecycle()?.addObserver(this)
             // v2 replaced the `initializeSessionWithToken` cookie handshake with
             // MMMapSessionInterceptor, installed by MapLibre.getInstance above.

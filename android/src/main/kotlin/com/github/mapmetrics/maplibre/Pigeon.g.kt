@@ -160,7 +160,12 @@ data class MapOptions (
   /** The map gestures. */
   val gestures: MapGestures,
   /** Toggle the texture mode on android. */
-  val androidTextureMode: Boolean
+  val androidTextureMode: Boolean,
+  /**
+   * Upper bound for the map's render rate in frames per second, or null for
+   * the platform default (the display's refresh rate).
+   */
+  val maximumFps: Long? = null
 )
  {
   companion object {
@@ -178,7 +183,8 @@ data class MapOptions (
       val maxPitch = pigeonVar_list[10] as Double
       val gestures = pigeonVar_list[11] as MapGestures
       val androidTextureMode = pigeonVar_list[12] as Boolean
-      return MapOptions(style, apiKey, zoom, pitch, bearing, center, maxBounds, minZoom, maxZoom, minPitch, maxPitch, gestures, androidTextureMode)
+      val maximumFps = pigeonVar_list[13] as Long?
+      return MapOptions(style, apiKey, zoom, pitch, bearing, center, maxBounds, minZoom, maxZoom, minPitch, maxPitch, gestures, androidTextureMode, maximumFps)
     }
   }
   fun toList(): List<Any?> {
@@ -196,6 +202,7 @@ data class MapOptions (
       maxPitch,
       gestures,
       androidTextureMode,
+      maximumFps,
     )
   }
 }
