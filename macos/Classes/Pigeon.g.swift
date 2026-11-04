@@ -158,6 +158,9 @@ struct MapOptions {
   var gestures: MapGestures
   /// Toggle the texture mode on android.
   var androidTextureMode: Bool
+  /// Upper bound for the map's render rate in frames per second, or null for
+  /// the platform default (the display's refresh rate).
+  var maximumFps: Int64? = nil
 
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
@@ -175,6 +178,7 @@ struct MapOptions {
     let maxPitch = pigeonVar_list[10] as! Double
     let gestures = pigeonVar_list[11] as! MapGestures
     let androidTextureMode = pigeonVar_list[12] as! Bool
+    let maximumFps: Int64? = nilOrValue(pigeonVar_list[13])
 
     return MapOptions(
       style: style,
@@ -189,7 +193,8 @@ struct MapOptions {
       minPitch: minPitch,
       maxPitch: maxPitch,
       gestures: gestures,
-      androidTextureMode: androidTextureMode
+      androidTextureMode: androidTextureMode,
+      maximumFps: maximumFps
     )
   }
   func toList() -> [Any?] {
@@ -207,6 +212,7 @@ struct MapOptions {
       maxPitch,
       gestures,
       androidTextureMode,
+      maximumFps,
     ]
   }
 }

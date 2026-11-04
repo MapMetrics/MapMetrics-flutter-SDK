@@ -1,3 +1,16 @@
+## 2.0.2 (unreleased)
+
+* **`MapOptions.maximumFps`**: caps how often the map re-renders. `null` (the
+  default) keeps the display rate, so nothing changes for existing maps. A
+  moving navigation map at 30 fps looked the same and cost far less CPU, GPU and
+  battery on a 120 Hz phone (Android `MapView.setMaximumFps`, iOS
+  `MLNMapView.preferredFramesPerSecond`). Read when the map is created.
+* **`MapController.easeCamera({required duration, ...})`**: glides the camera to
+  a new position at constant speed (no fly-out arc), for a camera that follows a
+  moving point a few times a second while the map draws the frames in between.
+  Android: `MapLibreMap.easeCamera(update, ms, false)`. Other platforms move
+  instantly, like `moveCamera`.
+
 ## 2.0.1
 
 * **`filter`, `minZoom` and `maxZoom` now work on fill, line and background

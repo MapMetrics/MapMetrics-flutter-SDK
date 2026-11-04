@@ -107,7 +107,8 @@ MapOptions::MapOptions(
   double min_pitch,
   double max_pitch,
   const MapGestures& gestures,
-  bool android_texture_mode)
+  bool android_texture_mode,
+  const int64_t* maximum_fps)
  : style_(style),
     api_key_(api_key ? std::optional<std::string>(*api_key) : std::nullopt),
     zoom_(zoom),
@@ -120,7 +121,8 @@ MapOptions::MapOptions(
     min_pitch_(min_pitch),
     max_pitch_(max_pitch),
     gestures_(std::make_unique<MapGestures>(gestures)),
-    android_texture_mode_(android_texture_mode) {}
+    android_texture_mode_(android_texture_mode),
+    maximum_fps_(maximum_fps ? std::optional<int64_t>(*maximum_fps) : std::nullopt) {}
 
 MapOptions::MapOptions(const MapOptions& other)
  : style_(other.style_),
@@ -135,7 +137,8 @@ MapOptions::MapOptions(const MapOptions& other)
     min_pitch_(other.min_pitch_),
     max_pitch_(other.max_pitch_),
     gestures_(std::make_unique<MapGestures>(*other.gestures_)),
-    android_texture_mode_(other.android_texture_mode_) {}
+    android_texture_mode_(other.android_texture_mode_),
+    maximum_fps_(other.maximum_fps_ ? std::optional<int64_t>(*other.maximum_fps_) : std::nullopt) {}
 
 MapOptions& MapOptions::operator=(const MapOptions& other) {
   style_ = other.style_;
@@ -151,6 +154,7 @@ MapOptions& MapOptions::operator=(const MapOptions& other) {
   max_pitch_ = other.max_pitch_;
   gestures_ = std::make_unique<MapGestures>(*other.gestures_);
   android_texture_mode_ = other.android_texture_mode_;
+  maximum_fps_ = other.maximum_fps_;
   return *this;
 }
 
@@ -283,9 +287,22 @@ void MapOptions::set_android_texture_mode(bool value_arg) {
 }
 
 
+const int64_t* MapOptions::maximum_fps() const {
+  return maximum_fps_ ? &(*maximum_fps_) : nullptr;
+}
+
+void MapOptions::set_maximum_fps(const int64_t* value_arg) {
+  maximum_fps_ = value_arg ? std::optional<int64_t>(*value_arg) : std::nullopt;
+}
+
+void MapOptions::set_maximum_fps(int64_t value_arg) {
+  maximum_fps_ = value_arg;
+}
+
+
 EncodableList MapOptions::ToEncodableList() const {
   EncodableList list;
-  list.reserve(13);
+  list.reserve(14);
   list.push_back(EncodableValue(style_));
   list.push_back(api_key_ ? EncodableValue(*api_key_) : EncodableValue());
   list.push_back(EncodableValue(zoom_));
@@ -299,6 +316,7 @@ EncodableList MapOptions::ToEncodableList() const {
   list.push_back(EncodableValue(max_pitch_));
   list.push_back(CustomEncodableValue(*gestures_));
   list.push_back(EncodableValue(android_texture_mode_));
+  list.push_back(maximum_fps_ ? EncodableValue(*maximum_fps_) : EncodableValue());
   return list;
 }
 
@@ -325,6 +343,10 @@ MapOptions MapOptions::FromEncodableList(const EncodableList& list) {
   auto& encodable_max_bounds = list[6];
   if (!encodable_max_bounds.IsNull()) {
     decoded.set_max_bounds(std::any_cast<const LngLatBounds&>(std::get<CustomEncodableValue>(encodable_max_bounds)));
+  }
+  auto& encodable_maximum_fps = list[13];
+  if (!encodable_maximum_fps.IsNull()) {
+    decoded.set_maximum_fps(std::get<int64_t>(encodable_maximum_fps));
   }
   return decoded;
 }

@@ -37,6 +37,7 @@ class MapOptions {
     this.maxBounds,
     this.gestures = const MapGestures.all(),
     this.androidTextureMode = true,
+    this.maximumFps,
     this.androidMode = AndroidPlatformViewMode.tlhc_vd,
     this.apiKey,
   }) : initPitch = pitch ?? initPitch;
@@ -124,4 +125,11 @@ class MapOptions {
   /// textureMode comes at a significant performance penalty.
   /// https://maplibre.org/maplibre-native/android/api/-map-libre%20-native%20-android/org.maplibre.android.maps/-map-libre-map-options/texture-mode.html
   final bool androidTextureMode;
+
+  /// Caps how often the map re-renders, in frames per second. `null` (the
+  /// default) keeps the platform behaviour: as fast as the display refreshes
+  /// (up to 120 Hz on many phones). A moving navigation map looks smooth at 30
+  /// and costs far less CPU, GPU and battery (Android `MapView.setMaximumFps`,
+  /// iOS `MLNMapView.preferredFramesPerSecond`). Read when the map is created.
+  final int? maximumFps;
 }

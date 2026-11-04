@@ -100,6 +100,7 @@ class MapOptions {
     required this.maxPitch,
     required this.gestures,
     required this.androidTextureMode,
+    this.maximumFps,
   });
 
   /// The URL of the used map style.
@@ -143,6 +144,10 @@ class MapOptions {
   /// Toggle the texture mode on android.
   bool androidTextureMode;
 
+  /// Upper bound for the map's render rate in frames per second, or null for
+  /// the platform default (the display's refresh rate).
+  int? maximumFps;
+
   Object encode() {
     return <Object?>[
       style,
@@ -158,6 +163,7 @@ class MapOptions {
       maxPitch,
       gestures,
       androidTextureMode,
+      maximumFps,
     ];
   }
 
@@ -177,6 +183,7 @@ class MapOptions {
       maxPitch: result[10]! as double,
       gestures: result[11]! as MapGestures,
       androidTextureMode: result[12]! as bool,
+      maximumFps: result[13] as int?,
     );
   }
 }

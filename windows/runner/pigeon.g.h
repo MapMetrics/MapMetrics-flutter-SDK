@@ -157,7 +157,8 @@ class MapOptions {
     double min_pitch,
     double max_pitch,
     const MapGestures& gestures,
-    bool android_texture_mode);
+    bool android_texture_mode,
+    const int64_t* maximum_fps);
 
   ~MapOptions() = default;
   MapOptions(const MapOptions& other);
@@ -221,6 +222,12 @@ class MapOptions {
   bool android_texture_mode() const;
   void set_android_texture_mode(bool value_arg);
 
+  // Upper bound for the map's render rate in frames per second, or null for
+  // the platform default (the display's refresh rate).
+  const int64_t* maximum_fps() const;
+  void set_maximum_fps(const int64_t* value_arg);
+  void set_maximum_fps(int64_t value_arg);
+
 
  private:
   static MapOptions FromEncodableList(const flutter::EncodableList& list);
@@ -243,6 +250,7 @@ class MapOptions {
   double max_pitch_;
   std::unique_ptr<MapGestures> gestures_;
   bool android_texture_mode_;
+  std::optional<int64_t> maximum_fps_;
 
 };
 

@@ -72,6 +72,7 @@ struct _MapmetricsMapOptions {
   double max_pitch;
   MapmetricsMapGestures* gestures;
   gboolean android_texture_mode;
+  int64_t* maximum_fps;
 };
 
 G_DEFINE_TYPE(MapmetricsMapOptions, mapmetrics_map_options, G_TYPE_OBJECT)
@@ -83,6 +84,7 @@ static void mapmetrics_map_options_dispose(GObject* object) {
   g_clear_object(&self->center);
   g_clear_object(&self->max_bounds);
   g_clear_object(&self->gestures);
+  g_clear_pointer(&self->maximum_fps, g_free);
   G_OBJECT_CLASS(mapmetrics_map_options_parent_class)->dispose(object);
 }
 
@@ -93,7 +95,7 @@ static void mapmetrics_map_options_class_init(MapmetricsMapOptionsClass* klass) 
   G_OBJECT_CLASS(klass)->dispose = mapmetrics_map_options_dispose;
 }
 
-MapmetricsMapOptions* mapmetrics_map_options_new(const gchar* style, const gchar* api_key, double zoom, double pitch, double bearing, MapmetricsLngLat* center, MapmetricsLngLatBounds* max_bounds, double min_zoom, double max_zoom, double min_pitch, double max_pitch, MapmetricsMapGestures* gestures, gboolean android_texture_mode) {
+MapmetricsMapOptions* mapmetrics_map_options_new(const gchar* style, const gchar* api_key, double zoom, double pitch, double bearing, MapmetricsLngLat* center, MapmetricsLngLatBounds* max_bounds, double min_zoom, double max_zoom, double min_pitch, double max_pitch, MapmetricsMapGestures* gestures, gboolean android_texture_mode, int64_t* maximum_fps) {
   MapmetricsMapOptions* self = MAPMETRICS_MAP_OPTIONS(g_object_new(mapmetrics_map_options_get_type(), nullptr));
   self->style = g_strdup(style);
   if (api_key != nullptr) {
@@ -123,6 +125,13 @@ MapmetricsMapOptions* mapmetrics_map_options_new(const gchar* style, const gchar
   self->max_pitch = max_pitch;
   self->gestures = MAPMETRICS_MAP_GESTURES(g_object_ref(gestures));
   self->android_texture_mode = android_texture_mode;
+  if (maximum_fps != nullptr) {
+    self->maximum_fps = static_cast<int64_t*>(malloc(sizeof(int64_t)));
+    *self->maximum_fps = *maximum_fps;
+  }
+  else {
+    self->maximum_fps = nullptr;
+  }
   return self;
 }
 
@@ -191,6 +200,11 @@ gboolean mapmetrics_map_options_get_android_texture_mode(MapmetricsMapOptions* s
   return self->android_texture_mode;
 }
 
+int64_t* mapmetrics_map_options_get_maximum_fps(MapmetricsMapOptions* self) {
+  g_return_val_if_fail(MAPMETRICS_IS_MAP_OPTIONS(self), nullptr);
+  return self->maximum_fps;
+}
+
 static FlValue* mapmetrics_map_options_to_list(MapmetricsMapOptions* self) {
   FlValue* values = fl_value_new_list();
   fl_value_append_take(values, fl_value_new_string(self->style));
@@ -206,6 +220,7 @@ static FlValue* mapmetrics_map_options_to_list(MapmetricsMapOptions* self) {
   fl_value_append_take(values, fl_value_new_float(self->max_pitch));
   fl_value_append_take(values, fl_value_new_custom_object(134, G_OBJECT(self->gestures)));
   fl_value_append_take(values, fl_value_new_bool(self->android_texture_mode));
+  fl_value_append_take(values, self->maximum_fps != nullptr ? fl_value_new_int(*self->maximum_fps) : fl_value_new_null());
   return values;
 }
 
@@ -245,7 +260,14 @@ static MapmetricsMapOptions* mapmetrics_map_options_new_from_list(FlValue* value
   MapmetricsMapGestures* gestures = MAPMETRICS_MAP_GESTURES(fl_value_get_custom_value_object(value11));
   FlValue* value12 = fl_value_get_list_value(values, 12);
   gboolean android_texture_mode = fl_value_get_bool(value12);
-  return mapmetrics_map_options_new(style, api_key, zoom, pitch, bearing, center, max_bounds, min_zoom, max_zoom, min_pitch, max_pitch, gestures, android_texture_mode);
+  FlValue* value13 = fl_value_get_list_value(values, 13);
+  int64_t* maximum_fps = nullptr;
+  int64_t maximum_fps_value;
+  if (fl_value_get_type(value13) != FL_VALUE_TYPE_NULL) {
+    maximum_fps_value = fl_value_get_int(value13);
+    maximum_fps = &maximum_fps_value;
+  }
+  return mapmetrics_map_options_new(style, api_key, zoom, pitch, bearing, center, max_bounds, min_zoom, max_zoom, min_pitch, max_pitch, gestures, android_texture_mode, maximum_fps);
 }
 
 struct _MapmetricsMapGestures {
