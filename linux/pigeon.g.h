@@ -120,12 +120,13 @@ G_DECLARE_FINAL_TYPE(MapmetricsMapOptions, mapmetrics_map_options, MAPMETRICS, M
  * max_pitch: field in this object.
  * gestures: field in this object.
  * android_texture_mode: field in this object.
+ * maximum_fps: field in this object.
  *
  * Creates a new #MapOptions object.
  *
  * Returns: a new #MapmetricsMapOptions
  */
-MapmetricsMapOptions* mapmetrics_map_options_new(const gchar* style, const gchar* api_key, double zoom, double pitch, double bearing, MapmetricsLngLat* center, MapmetricsLngLatBounds* max_bounds, double min_zoom, double max_zoom, double min_pitch, double max_pitch, MapmetricsMapGestures* gestures, gboolean android_texture_mode);
+MapmetricsMapOptions* mapmetrics_map_options_new(const gchar* style, const gchar* api_key, double zoom, double pitch, double bearing, MapmetricsLngLat* center, MapmetricsLngLatBounds* max_bounds, double min_zoom, double max_zoom, double min_pitch, double max_pitch, MapmetricsMapGestures* gestures, gboolean android_texture_mode, int64_t* maximum_fps);
 
 /**
  * mapmetrics_map_options_get_style
@@ -258,6 +259,17 @@ MapmetricsMapGestures* mapmetrics_map_options_get_gestures(MapmetricsMapOptions*
  * Returns: the field value.
  */
 gboolean mapmetrics_map_options_get_android_texture_mode(MapmetricsMapOptions* object);
+
+/**
+ * mapmetrics_map_options_get_maximum_fps
+ * @object: a #MapmetricsMapOptions.
+ *
+ * Upper bound for the map's render rate in frames per second, or null for
+ * the platform default (the display's refresh rate).
+ *
+ * Returns: the field value.
+ */
+int64_t* mapmetrics_map_options_get_maximum_fps(MapmetricsMapOptions* object);
 
 /**
  * MapmetricsMapGestures:

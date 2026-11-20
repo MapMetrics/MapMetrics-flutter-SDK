@@ -23,6 +23,17 @@ abstract class MapLibreMapState extends State<MapLibreMap>
   @override
   MapCamera? camera;
 
+  /// Default: no native linear ease on this platform, so move at once.
+  @override
+  Future<void> easeCamera({
+    required Duration duration,
+    Position? center,
+    double? zoom,
+    double? bearing,
+    double? pitch,
+  }) =>
+      moveCamera(center: center, zoom: zoom, bearing: bearing, pitch: pitch);
+
   /// Set to true once the map is initialized and a [MapController.camera]
   /// is set.
   bool isInitialized = false;

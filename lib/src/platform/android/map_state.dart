@@ -302,6 +302,31 @@ final class MapLibreMapStateAndroid extends MapLibreMapStateNative {
   }
 
   @override
+  Future<void> easeCamera({
+    required Duration duration,
+    Position? center,
+    double? zoom,
+    double? bearing,
+    double? pitch,
+  }) async {
+    final jniMap = _jniMapLibreMap;
+    if (jniMap == null) return;
+    final builder = jni.CameraPosition$Builder();
+    if (center != null) builder.target(center.toLatLng());
+    if (zoom != null) builder.zoom(zoom);
+    if (pitch != null) builder.tilt(pitch);
+    if (bearing != null) builder.bearing(bearing);
+    final position = builder.build();
+    builder.release();
+    final update = jni.CameraUpdateFactory.newCameraPosition(position);
+    // easingInterpolator false = linear: constant speed, so back-to-back
+    // eases join without a slow-down at each boundary.
+    jniMap.easeCamera$4(update, duration.inMilliseconds, false);
+    update.release();
+    position.release();
+  }
+
+  @override
   Future<void> animateCamera({
     Position? center,
     double? zoom,

@@ -412,6 +412,7 @@ class MapOptions {
     required this.gestures,
     required this.androidTextureMode,
     required this.apiKey,
+    required this.maximumFps,
   });
 
   /// The URL of the used map style.
@@ -454,6 +455,10 @@ class MapOptions {
 
   /// Toggle the texture mode on android.
   final bool androidTextureMode;
+
+  /// Upper bound for the map's render rate in frames per second, or null for
+  /// the platform default (the display's refresh rate).
+  final int? maximumFps;
 }
 
 /// Map gestures

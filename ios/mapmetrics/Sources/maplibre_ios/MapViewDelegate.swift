@@ -92,6 +92,10 @@ class MapLibreView: NSObject, FlutterPlatformView, MLNMapViewDelegate,
                 self._mapView.compassView.isHidden = true
                 self._mapView.attributionButton.isHidden = true
                 self._mapView.logoView.isHidden = true
+                // Render-rate cap (MapOptions.maximumFps): nil keeps the display rate.
+                if let fps = mapOptions.maximumFps {
+                    self._mapView.preferredFramesPerSecond = MLNMapViewPreferredFramesPerSecond(rawValue: Int(fps))
+                }
                 // set options
                 DispatchQueue.main.async {
                     var currentCenter = self._mapView.camera.centerCoordinate

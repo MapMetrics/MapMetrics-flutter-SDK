@@ -71,6 +71,20 @@ abstract interface class MapController {
     double? pitch,
   });
 
+  /// Glide the camera to a new position over [duration] at constant speed
+  /// (linear, no fly-out arc), for a camera that follows a moving point a few
+  /// times a second while the map fills in the frames between (Android:
+  /// `MapLibreMap.easeCamera(update, ms, false)`). Platforms without a native
+  /// linear ease move the camera instantly, like [moveCamera]. A new call
+  /// interrupts the one still running, from where the camera is.
+  Future<void> easeCamera({
+    required Duration duration,
+    Position? center,
+    double? zoom,
+    double? bearing,
+    double? pitch,
+  });
+
   /// Animate the map camera to a new location.
   Future<void> animateCamera({
     Position? center,

@@ -56,6 +56,7 @@ abstract class MapLibreMapStateNative extends MapLibreMapState
     ),
     androidTextureMode: options.androidTextureMode,
     apiKey: options.apiKey,
+    maximumFps: options.maximumFps,
   );
 
   @override
