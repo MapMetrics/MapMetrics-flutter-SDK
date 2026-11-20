@@ -1,4 +1,4 @@
-## 2.0.2 (unreleased)
+## 2.0.2
 
 * **`MapOptions.maximumFps`**: caps how often the map re-renders. `null` (the
   default) keeps the display rate, so nothing changes for existing maps. A
